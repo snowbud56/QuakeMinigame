@@ -1,0 +1,7 @@
+name: Quakecraft
+version: 1.0
+author: snowbud56
+main: com.snowbud56.QuakeMinigame
+commands:
+  quake:
+    description: Main Quake command.
