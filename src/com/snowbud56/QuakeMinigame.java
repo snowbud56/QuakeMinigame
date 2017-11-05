@@ -6,6 +6,7 @@ import com.snowbud56.events.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -17,10 +18,6 @@ public class QuakeMinigame extends JavaPlugin {
     private static QuakeMinigame instance;
     private static Set<Game> games;
     private int gamesLimit;
-
-    public static QuakeMinigame getInstance() {
-        return instance;
-    }
 
     @Override
     public void onEnable() {
@@ -39,15 +36,7 @@ public class QuakeMinigame extends JavaPlugin {
         } else {
             getLogger().info("There are no games set up! Please create one using the creation command.");
         }
-
-        getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
-        getServer().getPluginManager().registerEvents(new FoodLevelChange(), this);
-        getServer().getPluginManager().registerEvents(new PlayerDeath(), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuit(), this);
-        getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
-        getServer().getPluginManager().registerEvents(new PlayerMove(), this);
-        getServer().getPluginManager().registerEvents(new QuakeGuns(), this);
-        getServer().getPluginManager().registerEvents(new BlockInteract(), this);
+        registerListeners(new PlayerJoin(), new FoodLevelChange(), new PlayerDamage(), new PlayerDeath(), new PlayerQuit(), new QuakeGuns(), new BlockInteract(), new PlayerJoin());
         getLogger().info("Plugin successfully enabled!");
     }
 
@@ -66,6 +55,10 @@ public class QuakeMinigame extends JavaPlugin {
         }
     }
 
+    public static QuakeMinigame getInstance() {
+        return instance;
+    }
+
     public void registerGame(Game game) {
         if (gamesLimit != -1 && games.size() == gamesLimit) return;
         games.add(game);
@@ -78,6 +71,10 @@ public class QuakeMinigame extends JavaPlugin {
     public static Game getGame(Player player) {
         for (Game game : games) if (game.getPlayers().contains(player)) return game;
         return null;
+    }
+
+    private void registerListeners(Listener... listeners) {
+        for (Listener listener : listeners) getServer().getPluginManager().registerEvents(listener, this);
     }
 
     public static Set<Game> getGames() {
